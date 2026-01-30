@@ -1,0 +1,8 @@
+solana-py
+backoff
+websockets
+psycopg2-binary
+redis
+python-dotenv
+asyncio
+aiohttp

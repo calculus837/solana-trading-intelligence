@@ -1,0 +1,41 @@
+[Unit]
+Description=Solana Intel Engine - Main Application
+Documentation=https://github.com/your-repo/solana-intel-engine
+After=network.target postgresql.service redis.service
+Wants=postgresql.service redis.service
+
+[Service]
+Type=simple
+User=solana
+Group=solana
+WorkingDirectory=/opt/solana-intel-engine
+
+# Environment
+EnvironmentFile=/opt/solana-intel-engine/.env
+
+# Start command
+ExecStart=/opt/solana-intel-engine/.venv/bin/python main.py
+
+# Restart policy
+Restart=always
+RestartSec=10
+StartLimitIntervalSec=60
+StartLimitBurst=5
+
+# Security hardening
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+ReadWritePaths=/opt/solana-intel-engine/logs
+
+# Resource limits
+MemoryMax=2G
+CPUQuota=80%
+
+# Logging
+StandardOutput=append:/var/log/solana-intel/engine.log
+StandardError=append:/var/log/solana-intel/engine-error.log
+
+[Install]
+WantedBy=multi-user.target

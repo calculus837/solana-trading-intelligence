@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solana Intel Engine | Terminal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="modern-ui-polish.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- SIDEBAR NAVIGATION -->
+        <aside class="app-sidebar">
+            <div class="sidebar-logo">
+                <span class="logo-icon">⚡</span>
+            </div>
+
+            <nav class="sidebar-nav">
+                <button class="nav-item active" onclick="switchView('overview')" title="Overview">
+                    <span class="nav-icon">📊</span>
+                </button>
+                <button class="nav-item" onclick="switchView('intelligence')" title="Signals">
+                    <span class="nav-icon">🧠</span>
+                </button>
+                <button class="nav-item" onclick="switchView('execution')" title="Trades">
+                    <span class="nav-icon">⚡</span>
+                </button>
+                <button class="nav-item" onclick="switchView('settings')" title="Settings">
+                    <span class="nav-icon">⚙️</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="status-indicator" id="system-status-dot" title="System Online"></div>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="main-content">
+            <!-- TOP HEADER -->
+            <header class="app-header">
+                <div class="header-left">
+                    <h1 class="page-title">SOLANA INTEL <span class="version-tag">v1.2</span></h1>
+                    <div class="service-status-row">
+                        <span class="status-dot" id="status-redis" title="Redis"></span>
+                        <span class="status-dot" id="status-postgres" title="PG"></span>
+                        <span class="status-dot" id="status-neo4j" title="Neo4j"></span>
+                    </div>
+                </div>
+
+                <div class="header-center search-wrapper">
+                    <input type="text" id="wallet-search" class="terminal-input"
+                        placeholder="Search wallet or token address... /cmd">
+                </div>
+
+                <div class="header-right">
+                    <button id="btn-connect" class="btn-connect">Connect Wallet</button>
+                </div>
+            </header>
+
+            <!-- KPI ROW -->
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-label">Latency</div>
+                    <div class="kpi-value"><span id="stat-latency">--ms</span></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">TPS</div>
+                    <div class="kpi-value"><span id="stat-tps">--</span></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Active Signals</div>
+                    <div class="kpi-value"><span id="stat-alerts">0</span></div>
+                </div>
+                <div class="kpi-card kpi-pnl">
+                    <div class="kpi-label">Session PnL</div>
+                    <div class="kpi-value"><span id="stat-pnl">+0.00 SOL</span></div>
+                    <div id="pnl-sparkline" class="mini-sparkline"></div>
+                </div>
+            </div>
+
+            <!-- VIEWS CONTAINER -->
+            <div id="views-container" class="views-container">
+
+                <!-- VIEW: INTELLIGENCE (Default) -->
+                <div id="view-intelligence" class="main-view active">
+                    <!-- WORKSPACE SPLIT (Terminal | Data) -->
+                    <div class="workspace-grid">
+
+                        <!-- LEFT PANEL: TERMINAL & GRAPH -->
+                        <div class="panel-left">
+                            <div class="panel-tabs">
+                                <button class="panel-tab active" onclick="switchTab('terminal')">Terminal</button>
+                                <button class="panel-tab" onclick="switchTab('graph')">Cabal Graph</button>
+                            </div>
+
+                            <div id="terminal-view" class="terminal-container">
+                                <div class="terminal-toolbar">
+                                    <span class="terminal-status">● LIVE</span>
+                                    <div class="terminal-actions">
+                                        <button onclick="togglePause()" id="btn-pause">⏸</button>
+                                        <button onclick="clearTerminal()" id="btn-clear">🗑</button>
+                                    </div>
+                                </div>
+                                <div class="terminal-body" id="terminal-feed">
+                                    <div class="log-line system">Initialising Solana Intel Engine...</div>
+                                </div>
+                            </div>
+
+                            <div id="graph-view" class="graph-container" style="display: none;">
+                                <div class="graph-controls">
+                                    <button class="btn-xs" onclick="window.renderGraph('demo')">Load Demo</button>
+                                </div>
+                                <div id="graph-container"></div>
+                            </div>
+                        </div>
+
+                        <!-- RIGHT PANEL: LEADERBOARD & FRESH -->
+                        <div class="panel-right">
+                            <div class="panel-tabs">
+                                <button class="panel-tab active" onclick="switchTab('performance')">Leaderboard</button>
+                                <button class="panel-tab" onclick="switchTab('fresh')">Fresh Wallets</button>
+                            </div>
+
+                            <!-- LEADERBOARD TABLE -->
+                            <div id="performance-view" class="data-view">
+                                <table class="dense-table" id="leaderboard-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Source</th>
+                                            <th>Win Rate</th>
+                                            <th>PnL</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="leaderboard-body">
+                                        <tr>
+                                            <td colspan="3" class="loading-row">Waiting for data...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- FRESH WALLETS FEED -->
+                            <div id="fresh-view" class="data-view" style="display: none;">
+                                <div id="fresh-wallet-feed" class="feed-list">
+                                    <!-- Dynamic items -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW: EXECUTION -->
+                <div id="view-execution" class="main-view" style="display: none;">
+                    <div class="coming-soon">
+                        <h3>⚡ Execution Engine</h3>
+                        <p>Active Positions & Strategy Controls</p>
+                    </div>
+                </div>
+
+                <!-- VIEW: SETTINGS -->
+                <div id="view-settings" class="main-view" style="display: none;">
+                    <div class="settings-panel">
+                        <h3>⚙️ System Configuration</h3>
+                        <div class="setting-group">
+                            <label>Risk Profile</label>
+                            <select>
+                                <option>Conservative</option>
+                                <option selected>Moderate</option>
+                                <option>Aggressive</option>
+                            </select>
+                        </div>
+                        <div class="setting-group">
+                            <label>Max Slippage</label>
+                            <input type="text" value="0.5%">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- FOOTER STATUS BAR -->
+            <footer class="app-footer">
+                <div class="footer-stat">Influencers: <span id="influencer-count">0</span></div>
+                <div class="footer-stat">Clusters: <span id="cabal-cluster-count">0</span></div>
+                <div class="footer-stat">Sub-Wallets: <span id="subwallet-count">0</span></div>
+                <div class="footer-stat right">Circuit Breaker: <span id="circuit-status">ARMED</span></div>
+            </footer>
+        </main>
+    </div>
+
+    <!-- Alert Toast (Hidden by default) -->
+    <div id="alert-banner" class="toast-notification hidden">
+        <div class="toast-content">
+            <span class="toast-icon">🔔</span>
+            <span class="toast-message" id="alert-banner-text">Alert</span>
+        </div>
+        <button class="toast-close" onclick="hideAlertBanner()">✕</button>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="https://unpkg.com/force-graph"></script>
+    <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.min.js"></script>
+    <script type="module" src="js/dashboard.js"></script>
+    <script type="module" src="js/graph.js"></script>
+    <script src="js/wallet.js"></script>
+
+    <script>
+        // Simple view switcher for sidebar (placeholder implementation)
+        function switchView(viewName) {
+            document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            // In a real app, this would switch main content views
+            // For now, we keep the single terminal view active
+        }
+
+        // Tab switcher adapter for existing logic
+        window.switchTab = function (tabName) {
+            // Update buttons
+            document.querySelectorAll('.panel-tab').forEach(btn => {
+                if (btn.textContent.toLowerCase().includes(tabName.replace('terminal', 'erminal').replace('graph', 'raph'))) {
+                    btn.classList.add('active');
+                    // Sibling removal is messy without specific containers, handled by specific logic below
+                }
+            });
+
+            // Handle panel logic
+            if (tabName === 'terminal') {
+                document.getElementById('terminal-view').style.display = 'flex';
+                document.getElementById('graph-view').style.display = 'none';
+                // Deactivate graph tab button
+                document.querySelector('button[onclick="switchTab(\'graph\')"]').classList.remove('active');
+                document.querySelector('button[onclick="switchTab(\'terminal\')"]').classList.add('active');
+            } else if (tabName === 'graph') {
+                document.getElementById('terminal-view').style.display = 'none';
+                document.getElementById('graph-view').style.display = 'block';
+                document.querySelector('button[onclick="switchTab(\'terminal\')"]').classList.remove('active');
+                document.querySelector('button[onclick="switchTab(\'graph\')"]').classList.add('active');
+            } else if (tabName === 'performance') {
+                document.getElementById('performance-view').style.display = 'block';
+                document.getElementById('fresh-view').style.display = 'none';
+                document.querySelector('button[onclick="switchTab(\'fresh\')"]').classList.remove('active');
+                document.querySelector('button[onclick="switchTab(\'performance\')"]').classList.add('active');
+            } else if (tabName === 'fresh') {
+                document.getElementById('performance-view').style.display = 'none';
+                document.getElementById('fresh-view').style.display = 'block';
+                document.querySelector('button[onclick="switchTab(\'performance\')"]').classList.remove('active');
+                document.querySelector('button[onclick="switchTab(\'fresh\')"]').classList.add('active');
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,40 @@
+[Unit]
+Description=Solana Intel Engine - Ingestion Layer
+Documentation=https://github.com/your-repo/solana-intel-engine
+After=network.target redis.service
+Wants=redis.service
+
+[Service]
+Type=simple
+User=solana
+Group=solana
+WorkingDirectory=/opt/solana-intel-engine
+
+# Environment
+EnvironmentFile=/opt/solana-intel-engine/.env
+
+# Start command  
+ExecStart=/opt/solana-intel-engine/.venv/bin/python -m ingestion.main
+
+# Restart policy - critical service, restart aggressively
+Restart=always
+RestartSec=5
+StartLimitIntervalSec=60
+StartLimitBurst=10
+
+# Security hardening
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+
+# Resource limits (ingestion is memory-light but needs CPU)
+MemoryMax=512M
+CPUQuota=50%
+
+# Logging
+StandardOutput=append:/var/log/solana-intel/ingestion.log
+StandardError=append:/var/log/solana-intel/ingestion-error.log
+
+[Install]
+WantedBy=multi-user.target

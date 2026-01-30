@@ -1,0 +1,20 @@
+# Active Memecoin Trader Wallets
+# Source: Kolscan.io Leaderboard (January 2026)
+# Format: wallet_address # name | pnl | win/loss
+
+# Top 15 Profitable Traders
+AstaWuJuQiAS3AfqmM3xZxrJhkkZNXtW4VyaGQfqV6JL # asta | +204.30 SOL | 7/3
+DNfuF1L62WWyW3pNakVkyGGFzVVhj4Yr52jSmdTyeBHm # Gake | +194.10 SOL | 3/2
+GNrmKZCxYyNiSUsjduwwPJzhed3LATjciiKVuSGrsHEC # Giann | +143.91 SOL | 21/27
+ADC1QV9raLnGGDbnWdnsxazeZ4Tsiho4vrWadYswA2ph # Ducky | +127.83 SOL | 9/9
+ATFRUwvyMh61w2Ab6AZxUyxsAfiiuG1RqL6iv3Vi9q2B # Marcell | +112.17 SOL | 3/4
+CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o # Cented | +108.64 SOL | 132/117
+71PCu3E4JP5RDBoY6wJteqzxkKNXLyE1byg5BTAL9UtQ # Ramset | +72.31 SOL | 5/5
+5B79fMkcFeRTiwm7ehsZsFiKsC7m7n1Bgv9yLxPp9q2X # bandit | +70.69 SOL | 38/54
+GJA1HEbxGnqBhBifH9uQauzXSB53to5rhDrzmKxhSU65 # Latuche | +69.48 SOL | 19/28
+3H9LVHarjBoZ2YPEsgFbVD1zuERCGwfp4AeyHoHsFSEC # JADAWGS | +53.48 SOL | 2/2
+6S8GezkxYUfZy9JPtYnanbcZTMB87Wjt1qx3c6ELajKC # Nyhrox | +47.60 SOL | 10/24
+Ez2jp3rwXUbaTx7XwiHGaWVgTPFdzJoSg8TopqbxfaJN # Keano | +46.49 SOL | 8/9
+CEUA7zVoDRqRYoeHTP58UHU6TR8yvtVbeLrX1dppqoXJ # Tom | +44.67 SOL | 25/45
+4ZdCpHJrSn4E9GmfP8jjfsAExHGja2TEn4JmXfEeNtyT # Robo | +41.27 SOL | 8/2
+6mWEJG9LoRdto8TwTdZxmnJpkXpTsEerizcGiCNZvzXd # slingoor | +38.48 SOL | 4/3
